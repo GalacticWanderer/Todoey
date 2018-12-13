@@ -14,9 +14,16 @@ class TodoListViewController: UITableViewController {
     //the array for the todo list
     var itemArray = ["Find", "Them", "Stuff"]
     
+    //the variable that lets us persist and retrieve data from local storage
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        //if an array item with a key "TodoListArray" exits, set itemArray to the items
+        if let items = defaults.array(forKey: "TodoListArray") as? [String]{
+            itemArray = items
+        }
     }
     
     //configures the cell of the table view
@@ -66,6 +73,11 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             //appending the value to the itemArray and then reloading tableView data
             self.itemArray.append(textField.text!)
+            
+            //persisting the array to local storage using a key
+            self.defaults.setValue(self.itemArray, forKey: "TodoListArray")
+            
+            //reloading tableview
             self.tableView.reloadData()
             
         }
