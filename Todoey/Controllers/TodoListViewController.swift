@@ -12,26 +12,32 @@ import UIKit
 class TodoListViewController: UITableViewController {
 
     //the array for the todo list
-    var itemArray = ["Find", "Them", "Stuff"]
+    var itemArray = [Item]()
     
-    //the variable that lets us persist and retrieve data from local storage
-    let defaults = UserDefaults.standard
+    //specifying a filepath for NSCoder to save the items to
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //if an array item with a key "TodoListArray" exits, set itemArray to the items
-        if let items = defaults.array(forKey: "TodoListArray") as? [String]{
-            itemArray = items
-        }
+        //loading the items from plist to tableView on startup
+       loadItems()
+        
     }
     
     //configures the cell of the table view
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
+        //a var to hold itemArray indexpath
+        let item = itemArray[indexPath.row]
+        
         //setting the text label inside the cell to itemarray
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = item.title
+        
+        //if item.done is true chekmark on, if not, none
+        cell.accessoryType = item.done == true ? .checkmark : .none
         
         return cell
         
@@ -46,14 +52,11 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(itemArray[indexPath.row])
         
-        //if the cell's accessory is set to a checkmark, set it to none
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        //if not, set accessory to a checkmark
-        else{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        //setting item.done as the opposite of what it currently is true/false
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        //saves the items to the plist using NSCoder
+        saveItems()
         
         //animation when deselecting a row
         tableView.deselectRow(at: indexPath, animated: true)
@@ -72,13 +75,14 @@ class TodoListViewController: UITableViewController {
         //creating an UIAlertAction
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             //appending the value to the itemArray and then reloading tableView data
-            self.itemArray.append(textField.text!)
+            let newItem = Item()
+            newItem.title = textField.text!
             
-            //persisting the array to local storage using a key
-            self.defaults.setValue(self.itemArray, forKey: "TodoListArray")
+            //appending new item
+            self.itemArray.append(newItem)
             
-            //reloading tableview
-            self.tableView.reloadData()
+            //saving the item after appending
+            self.saveItems()
             
         }
         
@@ -95,7 +99,41 @@ class TodoListViewController: UITableViewController {
         //presenting the alert with animation
         present(alert, animated: true, completion: nil)
     }
+
+    //func to save data to our plist
+    func saveItems(){
+        //init variable encoder as PropertyListEncoder
+        let encoder = PropertyListEncoder()
+        
+        //wrap the write op with do, catch and try
+        do{
+            let data = try encoder.encode(itemArray)//encode the item array
+            try data.write(to: dataFilePath!)//erite to the filepath
+        } catch{
+            print("Error encoding item array")
+        }
+        
+        //reloading tableview
+        tableView.reloadData()
+    }
     
+    //func to load the data from plist
+    func loadItems(){
+        //'?' indicates optional and it's required
+        if let data = try? Data(contentsOf: dataFilePath!){//retrieve the data path
+            let decoder = PropertyListDecoder()//decoder variable
+            
+            //wrap the write op with do, catch and try
+            do{
+                //itemArray gets the decoded items
+               itemArray = try decoder.decode([Item].self, from: data)
+            }
+            catch{
+                print("Error decoding items")
+            }
+            
+        }
+    }
 
 }
 
