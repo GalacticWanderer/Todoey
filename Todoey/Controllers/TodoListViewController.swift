@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 //since we are using the UITableViewController, we don't need to extend datasource and delegate
 class TodoListViewController: UITableViewController {
@@ -14,8 +15,9 @@ class TodoListViewController: UITableViewController {
     //the array for the todo list
     var itemArray = [Item]()
     
-    //specifying a filepath for NSCoder to save the items to
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    //CoreData
+    //context takes gets the singleton shared delegate of UIApp and brings to our AppDelegate and then taps into it's persistent container and then grabs the viewcontext of it
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     
     override func viewDidLoad() {
@@ -55,7 +57,18 @@ class TodoListViewController: UITableViewController {
         //setting item.done as the opposite of what it currently is true/false
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        //saves the items to the plist using NSCoder
+        /*
+         *** deleting an item from tableView and database
+         * context.delete(array[indexPath.row]) must be called first before
+         * array.remove(at: indexPath.row)
+         
+         code below:
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
+        
+         */
+        
+        //once bool is changed on tap, updates the stored value on CoreData by calling saveItems() method
         saveItems()
         
         //animation when deselecting a row
@@ -74,9 +87,11 @@ class TodoListViewController: UITableViewController {
         
         //creating an UIAlertAction
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
-            //appending the value to the itemArray and then reloading tableView data
-            let newItem = Item()
+            
+            //init newItem using the Item and the context we declared before
+            let newItem = Item(context: self.context)
             newItem.title = textField.text!
+            newItem.done = false
             
             //appending new item
             self.itemArray.append(newItem)
@@ -100,40 +115,37 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    //func to save data to our plist
+    //func to save/update data to CoreData
     func saveItems(){
-        //init variable encoder as PropertyListEncoder
-        let encoder = PropertyListEncoder()
-        
-        //wrap the write op with do, catch and try
+     
         do{
-            let data = try encoder.encode(itemArray)//encode the item array
-            try data.write(to: dataFilePath!)//erite to the filepath
+            try context.save()
         } catch{
-            print("Error encoding item array")
+            print("error saving context \(error)")
         }
         
         //reloading tableview
         tableView.reloadData()
     }
     
-    //func to load the data from plist
+    //func to load the data from CoreData
     func loadItems(){
-        //'?' indicates optional and it's required
-        if let data = try? Data(contentsOf: dataFilePath!){//retrieve the data path
-            let decoder = PropertyListDecoder()//decoder variable
-            
+        //declaring a varibale called request
+        //must specify the type which is "NSFetchRequest" and gets <Item> which is the entity of the database
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
             //wrap the write op with do, catch and try
             do{
-                //itemArray gets the decoded items
-               itemArray = try decoder.decode([Item].self, from: data)
+                //setting the itemArray to the contents of the fetch request
+                //pass request we declared before
+                itemArray = try context.fetch(request)
             }
             catch{
-                print("Error decoding items")
+               print("Error loading data \(error)")
             }
             
         }
     }
 
-}
+
 
