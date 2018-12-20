@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 //since we are using the UITableViewController, we don't need to extend datasource and delegate
-class TodoListViewController: UITableViewController {
+class TodoListViewController: UITableViewController{
 
     //the array for the todo list
     var itemArray = [Item]()
@@ -22,6 +22,7 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         //loading the items from plist to tableView on startup
        loadItems()
@@ -76,7 +77,6 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         //a local var to store the input from the user
@@ -129,10 +129,8 @@ class TodoListViewController: UITableViewController {
     }
     
     //func to load the data from CoreData
-    func loadItems(){
-        //declaring a varibale called request
-        //must specify the type which is "NSFetchRequest" and gets <Item> which is the entity of the database
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()){
+        //loaditems take a param request of type NSFetchRequest which has a default value of Item.fetchRequest() if no param passed
         
             //wrap the write op with do, catch and try
             do{
@@ -143,9 +141,40 @@ class TodoListViewController: UITableViewController {
             catch{
                print("Error loading data \(error)")
             }
-            
+        tableView.reloadData()
+        }
+}
+
+
+extension TodoListViewController: UISearchBarDelegate{
+    //func to execute when search button clicked
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //creating our request var so we can query and sort it
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        print(searchBar.text!)
+        
+        //querying data, searching for title that CONTAINS value. [cd] is case insensitive
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        //sorting the request in ascending order
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        loadItems(with: request)
+    }
+    
+    //func to detect when text changed
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        //if textCount of search button is 0
+        //loaditem() the original table
+        //let go of the serachBar by resigning it from the first responder
+        if searchBar.text?.count == 0{
+            loadItems()
+            DispatchQueue.main.async{
+                searchBar.resignFirstResponder()
+            }
         }
     }
+    
+}
 
 
 
