@@ -17,9 +17,7 @@ class CategoryViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         loadItems()
-
     }
 
     // tableView cell
@@ -90,9 +88,18 @@ class CategoryViewController: UITableViewController {
     
     //on pressed, perform segue
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "goToItems", sender: nil)
+        performSegue(withIdentifier: "goToItems", sender: self)
     }
+    
+    //gets executed before segue gets called
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
         
+        //checking to see 
+        if let indexPath = tableView.indexPathForSelectedRow{
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
+    }
         
         
 }

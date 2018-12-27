@@ -15,6 +15,14 @@ class TodoListViewController: UITableViewController{
     //the array for the todo list
     var itemArray = [Item]()
     
+    //everytime selected category var gets changed, loadItems gets called
+    //diSet monitors when a variable gets changed
+    var selectedCategory : Category?{
+        didSet{
+            loadItems()
+        }
+    }
+    
     //CoreData
     //context takes gets the singleton shared delegate of UIApp and brings to our AppDelegate and then taps into it's persistent container and then grabs the viewcontext of it
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -25,7 +33,7 @@ class TodoListViewController: UITableViewController{
         
         
         //loading the items from plist to tableView on startup
-       loadItems()
+       //loadItems()
         
     }
     
@@ -92,6 +100,7 @@ class TodoListViewController: UITableViewController{
             let newItem = Item(context: self.context)
             newItem.title = textField.text!
             newItem.done = false
+            newItem.parentCategory = self.selectedCategory
             
             //appending new item
             self.itemArray.append(newItem)
@@ -129,8 +138,21 @@ class TodoListViewController: UITableViewController{
     }
     
     //func to load the data from CoreData
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()){
+    //request and predicate are two optional parameters for loadItems()
+    //predicate is a query
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
         //loaditems take a param request of type NSFetchRequest which has a default value of Item.fetchRequest() if no param passed
+        
+        //looking for items that are at the parentCategory
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        //if predicate exits, use the NSCompundPredicate
+        if let additionalPredicate = predicate{
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+        }else{
+            //if not, just use categoryPredicate
+            request.predicate = categoryPredicate
+        }
         
             //wrap the write op with do, catch and try
             do{
@@ -143,6 +165,7 @@ class TodoListViewController: UITableViewController{
             }
         tableView.reloadData()
         }
+    
 }
 
 
@@ -154,11 +177,11 @@ extension TodoListViewController: UISearchBarDelegate{
         print(searchBar.text!)
         
         //querying data, searching for title that CONTAINS value. [cd] is case insensitive
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         //sorting the request in ascending order
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
     }
     
     //func to detect when text changed
