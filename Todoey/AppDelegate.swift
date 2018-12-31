@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        //*** a simple example of realm usage ***
+        
+        // install Realm
+        //create the Data model
+        
+        //prints the directory the realm data is getting saved at
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
+        
+        //creating an instance of our datamaodel and giving it values
+        let data = Data()
+        data.name = "Joy"
+        data.age = 23
+        
+        //using the do, catch block to get acccess to:
+        //realm and,
+        //writing to realm database using realm.write
+        //and realm.add
+        do{
+            let realm = try Realm()
+            try realm.write {
+                realm.add(data)
+            }
+        }catch{
+            print("error occoured on realm pod \(error)")
+        }
+        
         return true
     }
 
