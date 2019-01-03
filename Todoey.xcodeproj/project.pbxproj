@@ -9,18 +9,20 @@
 /* Begin PBXBuildFile section */
 		32FACBA2A569C8E9B394CC41 /* Pods_Todoey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F445FB26C5241FF0FA4F952E /* Pods_Todoey.framework */; };
 		C5057F7E21D1AA780076B11C /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5057F7D21D1AA780076B11C /* CategoryViewController.swift */; };
+		C52ADEB421DDA91900821377 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52ADEB321DDA91900821377 /* Item.swift */; };
+		C52ADEB621DDA92500821377 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52ADEB521DDA92500821377 /* Category.swift */; };
 		C542299D21BF38F0004D1ED8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C542299C21BF38F0004D1ED8 /* AppDelegate.swift */; };
 		C542299F21BF38F0004D1ED8 /* TodoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C542299E21BF38F0004D1ED8 /* TodoListViewController.swift */; };
 		C54229A221BF38F0004D1ED8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C54229A021BF38F0004D1ED8 /* Main.storyboard */; };
 		C54229A421BF38F1004D1ED8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C54229A321BF38F1004D1ED8 /* Assets.xcassets */; };
 		C54229A721BF38F1004D1ED8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C54229A521BF38F1004D1ED8 /* LaunchScreen.storyboard */; };
-		C54BA2A121C9C2D300850649 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C54BA29F21C9C2D300850649 /* DataModel.xcdatamodeld */; };
-		C5B2268B21D9DF480047810A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B2268A21D9DF480047810A /* Data.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		716AF1C27CCB1AD13659BA02 /* Pods-Todoey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Todoey.release.xcconfig"; path = "Pods/Target Support Files/Pods-Todoey/Pods-Todoey.release.xcconfig"; sourceTree = "<group>"; };
 		C5057F7D21D1AA780076B11C /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		C52ADEB321DDA91900821377 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		C52ADEB521DDA92500821377 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		C542299921BF38F0004D1ED8 /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C542299C21BF38F0004D1ED8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C542299E21BF38F0004D1ED8 /* TodoListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListViewController.swift; sourceTree = "<group>"; };
@@ -28,8 +30,6 @@
 		C54229A321BF38F1004D1ED8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C54229A621BF38F1004D1ED8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C54229A821BF38F1004D1ED8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C54BA2A021C9C2D300850649 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
-		C5B2268A21D9DF480047810A /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		DF16C7862E98FD7D49980D90 /* Pods-Todoey.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Todoey.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Todoey/Pods-Todoey.debug.xcconfig"; sourceTree = "<group>"; };
 		F445FB26C5241FF0FA4F952E /* Pods_Todoey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Todoey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -99,8 +99,8 @@
 		C5F1D6DD21C2C1B800FD5F5C /* Data Model */ = {
 			isa = PBXGroup;
 			children = (
-				C54BA29F21C9C2D300850649 /* DataModel.xcdatamodeld */,
-				C5B2268A21D9DF480047810A /* Data.swift */,
+				C52ADEB321DDA91900821377 /* Item.swift */,
+				C52ADEB521DDA92500821377 /* Category.swift */,
 			);
 			path = "Data Model";
 			sourceTree = "<group>";
@@ -251,11 +251,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C52ADEB421DDA91900821377 /* Item.swift in Sources */,
 				C5057F7E21D1AA780076B11C /* CategoryViewController.swift in Sources */,
-				C5B2268B21D9DF480047810A /* Data.swift in Sources */,
 				C542299F21BF38F0004D1ED8 /* TodoListViewController.swift in Sources */,
-				C54BA2A121C9C2D300850649 /* DataModel.xcdatamodeld in Sources */,
 				C542299D21BF38F0004D1ED8 /* AppDelegate.swift in Sources */,
+				C52ADEB621DDA92500821377 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,19 +457,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		C54BA29F21C9C2D300850649 /* DataModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				C54BA2A021C9C2D300850649 /* DataModel.xcdatamodel */,
-			);
-			currentVersion = C54BA2A021C9C2D300850649 /* DataModel.xcdatamodel */;
-			path = DataModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = C542299121BF38F0004D1ED8 /* Project object */;
 }

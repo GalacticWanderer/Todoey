@@ -19,7 +19,7 @@ class TodoListViewController: UITableViewController{
     //diSet monitors when a variable gets changed
     var selectedCategory : Category?{
         didSet{
-            loadItems()
+            //loadItems()
         }
     }
     
@@ -85,6 +85,7 @@ class TodoListViewController: UITableViewController{
         
     }
     
+    /*
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
         //a local var to store the input from the user
@@ -123,6 +124,8 @@ class TodoListViewController: UITableViewController{
         //presenting the alert with animation
         present(alert, animated: true, completion: nil)
     }
+ */
+    
 
     //func to save/update data to CoreData
     func saveItems(){
@@ -137,6 +140,8 @@ class TodoListViewController: UITableViewController{
         tableView.reloadData()
     }
     
+    /*
+ 
     //func to load the data from CoreData
     //request and predicate are two optional parameters for loadItems()
     //predicate is a query
@@ -167,6 +172,9 @@ class TodoListViewController: UITableViewController{
         }
     
 }
+ 
+ */
+    /*
 
 
 extension TodoListViewController: UISearchBarDelegate{
@@ -196,6 +204,7 @@ extension TodoListViewController: UISearchBarDelegate{
             }
         }
     }
+ */
     
 }
 
