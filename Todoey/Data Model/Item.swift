@@ -12,6 +12,7 @@ import RealmSwift
 class Item: Object{
     @objc dynamic var title : String = ""
     @objc dynamic var done : Bool = false
+    @objc dynamic var dateCreated: Date? //store the time and date an item is created. lazy init
     
     //inverse relationship
     //each item has an inverse relationship to a parentCategory from Category class named "items"

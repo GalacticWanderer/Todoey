@@ -40,9 +40,7 @@ class TodoListViewController: UITableViewController{
         
         tableView.reloadData()
         
-        
     }
-    
     
     //configures the cell of the table view
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -113,6 +111,7 @@ class TodoListViewController: UITableViewController{
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
+                        newItem.dateCreated = Date()
                         //appened items under current category
                         currentcategory.items.append(newItem)
                     }
@@ -142,20 +141,18 @@ class TodoListViewController: UITableViewController{
 
 }
 
-/*
+//search bar 
 extension TodoListViewController: UISearchBarDelegate{
     //func to execute when search button clicked
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //creating our request var so we can query and sort it
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+     
         print(searchBar.text!)
         
-        //querying data, searching for title that CONTAINS value. [cd] is case insensitive
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        //filtering the todoItems with the items that contains our input (title) and it's Case and Diacritic insensitive
+        //also sorting the items by date created as in whatever was created earlier will show first since it's ascending order
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        tableView.reloadData()
         
-        //sorting the request in ascending order
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        loadItems(with: request, predicate: predicate)
     }
     
     //func to detect when text changed
@@ -165,6 +162,8 @@ extension TodoListViewController: UISearchBarDelegate{
         //let go of the serachBar by resigning it from the first responder
         if searchBar.text?.count == 0{
             loadItems()
+            
+            //letting go of the input box by dispatch and resignFirstResponder()
             DispatchQueue.main.async{
                 searchBar.resignFirstResponder()
             }
@@ -172,6 +171,6 @@ extension TodoListViewController: UISearchBarDelegate{
     }
     
 }
- 
- */
+
+
 
