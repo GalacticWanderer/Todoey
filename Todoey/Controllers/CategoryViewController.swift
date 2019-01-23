@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     
@@ -20,15 +21,18 @@ class CategoryViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadItems()
-        tableView.rowHeight = 100.0
+        
     }
 
     // tableView cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No categories added yet"
-        
+        //checking if catagoryArray is not nil first, then setting the name and the color property of the cell
+        if let category = categoryArray?[indexPath.row]{
+            cell.textLabel?.text = category.name
+            cell.backgroundColor = UIColor(hexString: (category.color ))
+        }
         return cell
     }
     
@@ -93,6 +97,9 @@ class CategoryViewController: SwipeTableViewController {
             
             let newCategory = Category()
             newCategory.name = textField.text!
+            
+            //assigning a random color hex string to each catagory using the chameleon framework's randomFlat
+            newCategory.color = UIColor.randomFlat.hexValue()
             
             //**notice that there is no more appending of items since realm dynamically updates
             
