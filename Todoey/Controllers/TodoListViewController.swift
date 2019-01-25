@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 //since we are using the UITableViewController, we don't need to extend datasource and delegate
 class TodoListViewController: SwipeTableViewController{
@@ -18,6 +19,7 @@ class TodoListViewController: SwipeTableViewController{
     //the array for the todo list
     var todoItems: Results<Item>?
     
+    //getting the categoryArray passed from the CategoryViewController
     //everytime selected category var gets changed, loadItems gets called
     //diSet monitors when a variable gets changed
     //didset triggers loadItems()
@@ -63,6 +65,14 @@ class TodoListViewController: SwipeTableViewController{
         if let item = todoItems?[indexPath.row]{
             //setting the text label inside the cell to itemarray
             cell.textLabel?.text = item.title
+            
+            //since categoryArray has been passed to the selectedCategory variable, we just use that to access the color
+            //using optional chaining to cast the value safely to the UIColor
+            if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)){ //the division required to add the darken effect to the list of items
+                
+                cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
             
             //if item.done is true chekmark on, if not, none
             cell.accessoryType = item.done == true ? .checkmark : .none

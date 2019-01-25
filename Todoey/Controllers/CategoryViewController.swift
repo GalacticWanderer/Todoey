@@ -32,6 +32,11 @@ class CategoryViewController: SwipeTableViewController {
         if let category = categoryArray?[indexPath.row]{
             cell.textLabel?.text = category.name
             cell.backgroundColor = UIColor(hexString: (category.color ))
+            
+            //assigning the color of the text label using the if let nil checking patern
+            if let color = UIColor(hexString: (categoryArray?[indexPath.row].color)!){
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            }
         }
         return cell
     }
@@ -126,7 +131,7 @@ class CategoryViewController: SwipeTableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! TodoListViewController
         
-        //checking to see 
+        //passing the categoryArray as the value of the the selectedCategory vlaue
         if let indexPath = tableView.indexPathForSelectedRow{
             destinationVC.selectedCategory = categoryArray?[indexPath.row]
         }
