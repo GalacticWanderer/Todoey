@@ -17,7 +17,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         //setting the rowHeight on the parent class
         tableView.rowHeight = 100.0
         tableView.separatorStyle = .none
-        
     }
     
     //tableView data source methods

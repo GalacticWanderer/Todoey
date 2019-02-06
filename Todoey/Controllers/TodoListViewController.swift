@@ -19,6 +19,8 @@ class TodoListViewController: SwipeTableViewController{
     //the array for the todo list
     var todoItems: Results<Item>?
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     //getting the categoryArray passed from the CategoryViewController
     //everytime selected category var gets changed, loadItems gets called
     //diSet monitors when a variable gets changed
@@ -33,6 +35,43 @@ class TodoListViewController: SwipeTableViewController{
         super.viewDidLoad()
     }
     
+    // an entry point to the view right after the viewDidLoad() gets called
+    override func viewDidAppear(_ animated: Bool) {
+        //use a "guad let" for optional binding if you expect a value to typically exist and throw fatal Error
+        //use "if let" if you expect a value might not exist and use the else statement to return a value if expected value doesnt exist
+        
+        //checking to see if selectedCategory.color is not nil, if not throw FE
+        guard let colorHex = selectedCategory?.color else{fatalError("Selected category has no color")}
+            
+            // checking to see if the nav bar exits, if not, throws a fatal error
+            guard let navBar = navigationController?.navigationBar else{
+                fatalError("Navigation controller doesn't exist")
+            }
+        
+        // checking to see if navBarColor isn't nil, if not throw FE
+        guard let navBarColor = UIColor(hexString: colorHex) else{fatalError("navBarColor returns nil")}
+        
+        
+                navBar.barTintColor = navBarColor //navBar color
+                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true) //the color of the back button is contasted to the navBarColor
+                //since we use large texts, we modify the large text attribute. Setting the NSAttributedString.Key.foregroundColor to a contrasting volor for navBarColor
+                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+                //changing the searchBarTint color
+                searchBar.barTintColor = navBarColor
+    }
+    
+    //triggers when view about to get dismissed
+    override func viewWillDisappear(_ animated: Bool) {
+        guard let originalColor = UIColor(hexString: "1D9BF6") else {
+            fatalError("error retriving original color")
+        }
+        
+        //changing the navBar attributes back to the regular colors
+        navigationController?.navigationBar.barTintColor = originalColor
+        navigationController?.navigationBar.tintColor = FlatWhite()
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : FlatWhite()]
+        
+    }
     
     //loads the todo items
     func loadItems(){
